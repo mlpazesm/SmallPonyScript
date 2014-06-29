@@ -1,13 +1,11 @@
 // ==UserScript==
-// @name			SmallPonyScript
-// @version			0.14.88
-// @namespace		http://http://азъесмь.рф//*
-// @author			@млп (понилюб)
-// @description		VerySmallPonyScript
-// @run-at			document-start
-// @grant			GM_getValue
-// @grant			GM_setValue
-// @grant			unsafeWindow
+// @name            SmallPonyScript
+// @version         0.14.88
+// @namespace       http://http://азъесмь.рф//*
+// @author          @млп (понилюб)
+// @description     VerySmallPonyScript
+// @run-at          document-start
+// @grant           none
 // @include         http://азъесмь.рф/*
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js
 // ==/UserScript==
