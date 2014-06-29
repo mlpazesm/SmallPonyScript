@@ -4,7 +4,6 @@
 // @namespace		http://http://азъесмь.рф//*
 // @author			@млп (понилюб)
 // @description		VerySmallPonyScript
-// @updateURL		https://github.com/mlpazesm/SmallPonyScript/raw/master/smallpony.js
 // @run-at			document-start
 // @grant			GM_getValue
 // @grant			GM_setValue
