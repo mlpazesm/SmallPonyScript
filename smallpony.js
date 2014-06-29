@@ -1,11 +1,17 @@
 // ==UserScript==
-// @name        SmallPonyScript
-// @namespace   http://азъесмь.рф/*
-// @version     0.14.88
-// @include     азъесмь.рф/*
-// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js
+// @name			SmallPonyScript
+// @version			0.14.88
+// @namespace		http://http://азъесмь.рф//*
+// @author			@млп (понилюб)
+// @description		VerySmallPonyScript
+// @updateURL		https://github.com/mlpazesm/SmallPonyScript/raw/master/smallpony.js
+// @run-at			document-start
+// @grant			GM_getValue
+// @grant			GM_setValue
+// @grant			unsafeWindow
+// @include         http://азъесмь.рф/*
+// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js
 // ==/UserScript==
-
 
 var user_hide_list = GM_getValue("user_hide_list", "");
 
