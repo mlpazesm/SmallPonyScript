@@ -1,16 +1,18 @@
 // ==UserScript==
 // @name            SmallPonyScript
 // @version         0.14.88
-// @namespace       http://http://азъесмь.рф//*
+// @namespace       http://азъесмь.рф/
 // @author          @млп (понилюб)
 // @description     VerySmallPonyScript
-// @run-at          document-start
-// @grant           none
+// @grant           GM_getValue
+// @grant           GM_setValue
 // @include         http://азъесмь.рф/*
 // @require         http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js
 // ==/UserScript==
 
-var user_hide_list = GM_getValue("user_hide_list", "");
+
+//var user_hide_list = GM_getValue("user_hide_list", "");
+var user_hide_list = "";
 
 function applyCss() {
     var css = document.createElement("style");
@@ -29,14 +31,15 @@ background-color: #E0E0E0; \
     padding: 15px; \
 background-color: #E0E0E0; \
 }";
-    document.body.appendChild(css);
+    
+    $("body").append(css);
 }
 
 function createSmallPanel() {
     var panel = document.createElement("div");
     panel.setAttribute("id", "ps_small_panel");
     $(panel).click(function() {
-        console.log("show");
+        $("#ps_hide_text").val(GM_getValue("user_hide_list", ""));
         $("#ps_big_panel").show();
         
     });
@@ -103,11 +106,18 @@ function hideUser_(name) {
 }
 
 applyCss();
-
 var user_name = $("#current-user")[0].innerHTML;
-
 createBigPanel(user_hide_list);
 createSmallPanel();
-
 hideUser();
 selectNamedMessage(user_name);
+
+$(document).ready(function() {
+    user_hide_list = GM_getValue("user_hide_list", "");
+    hideUser();
+    
+    $('#body').bind('contentchanged', function() {
+       hideUser();
+       selectNamedMessage(user_name);   
+    });
+});
