@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name            SmallPonyScript
-// @version         0.14.88
+// @version         0.14.88b
+// @updateURL       https://raw.githubusercontent.com/mlpazesm/SmallPonyScript/master/smallpony.meta.js
 // @namespace       http://азъесмь.рф/
 // @author          @млп (понилюб)
 // @description     VerySmallPonyScript
