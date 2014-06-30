@@ -1,20 +1,17 @@
 SmallPonyScript
-===============
+---------------
 
 Азъесмчуй удобно!
 
-
 Возможности:
 
-| подсветка сообщений адресованных вам
-
-| скрытие постов
-
-| ОБРАЩЕНИЯ
+- подсветка сообщений адресованных вам
+- скрытие постов
+- ОБРАЩЕНИЯ
 
 Установка
-===============
-Firefox:
+---------
+###### Firefox:
 
 
 1. Установите расширение Greasemonkey - https://addons.mozilla.org/ru/firefox/addon/greasemonkey/.
@@ -24,6 +21,7 @@ Firefox:
 3. Нажмите "Установить скрипт"
 
 
+###### Chrome:
 
 Хромоги соснули, им сложнее. Гайд по установке для хрома взят с https://github.com/SthephanShinkufag/Dollchan-Extension-Tools/wiki/installation
 
@@ -33,3 +31,7 @@ Firefox:
 Сохраните туда ваш файл скрипта (https://raw.githubusercontent.com/mlpazesm/SmallPonyScript/master/smallpony.user.js).
     
 Зайдите в браузере на страницу ваших расширений, набрав в адресной строке chrome://extensions/. Установите галочку Режим разработчика, нажмите кнопку Загрузить распакованной расширение, укажите путь к папке, подтвердите.
+
+###### Chrome (альтернативный вариант):
+
+Просто используйте [tampermonkey](http://tampermonkey.net/)
