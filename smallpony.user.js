@@ -116,7 +116,9 @@ selectNamedMessage(user_name);
 if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) {
     console.log("Вы на новостной странице");
 } else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) {
+    console.log("asd");
     $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
+    unsafeWindow.$(window).unbind('scroll');
 //Код на десяточку!
 loadMessages = function (e) {
     list = $('.msg_list');
@@ -143,8 +145,6 @@ loadMessages = function (e) {
     
 };
 
-unsafeWindow.$(window).unbind('scroll');
-
 var last = false;
 var i = 0;
 function loadNext() {
@@ -162,9 +162,7 @@ function loadNext() {
 $(document).ready(function() {
     user_hide_list = GM_getValue("user_hide_list", "");
     hideUser();
-    
-    unsafeWindow.$(window).unbind('scroll');
-    
+        
     loadNext();
     console.log("Load!");
 });
