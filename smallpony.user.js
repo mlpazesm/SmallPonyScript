@@ -5,6 +5,7 @@
 // @author          @млп (понилюб)
 // @description     VerySmallPonyScript
 // @include         http://азъесмь.рф/*
+// @include         http://xn--80akfvy6cr.xn--p1ai/*
 // @grant           GM_getValue
 // @grant           GM_setValue
 // @grant           unsafeWindow
@@ -110,58 +111,54 @@ applyCss();
 var user_name = $("#current-user")[0].innerHTML;
 createBigPanel(user_hide_list);
 createSmallPanel();
-hideUser();
-selectNamedMessage(user_name);
 
-if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) {
-    console.log("Вы на новостной странице");
-} else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) {
-    $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
-    unsafeWindow.$(window).unbind('scroll');
-//Код на десяточку!
-loadMessages = function (e) {
-    list = $('.msg_list');
-    
-    current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
-    
-    '' != current_url && $.ajax({
-        url: current_url,
-        type: 'get',
-        dataType: 'json',
-        success: function (e) {
-            'ok' == e.status && ($.each(e.messages, function (e, t) {
-                try {
-                    last = Math.min(t.item_id, last);
-                    if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
-                } catch (n) {
-                }
-            }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'))
-            //loadNext();
-        },
-        error: function () {
-        }
+if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) { //новости
+    $(document).ready(function() {
+        selectNamedMessage(user_name);
+        user_hide_list = GM_getValue("user_hide_list", "");
+        hideUser();
     });
-    
-};
+} else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) { //обращения
+    $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
 
-var last = false;
-var i = 0;
-function loadNext() {
-    i++;
-    if (i > 2) {
-        return;
+    //Код на десяточку!
+    loadMessages = function (e) {
+        list = $('.msg_list');
+    
+        current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
+    
+        '' != current_url && $.ajax({
+            url: current_url,
+            type: 'get',
+            dataType: 'json',
+            success: function (e) {
+                'ok' == e.status && ($.each(e.messages, function (e, t) {
+                    try {
+                        last = Math.min(t.item_id, last);
+                        if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
+                    } catch (n) {
+                    }
+                }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'));
+            },
+        });
+    
+    };
+
+    var last = false;
+    var i = 0;
+    function loadNext() {
+        i++;
+        if (i > 2) {
+            return;
+        }
+    
+        //строка на 10/10
+        null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
     }
     
-    //строка на 10/10
-    null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
+    unsafeWindow.$(window).unbind('scroll');
+    $(document).ready(function() {
+        unsafeWindow.$(window).unbind('scroll');
+        loadNext();
+    });
 }
-}
-
-
-$(document).ready(function() {
-    user_hide_list = GM_getValue("user_hide_list", "");
-    hideUser();
-        
-    loadNext();
-    console.log("Load!");
-});
