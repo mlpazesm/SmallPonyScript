@@ -72,7 +72,7 @@ function selectNamedMessage(name) {
     msgs_txt = $("div.msg_txt");
     
     $.each(msgs_txt, function(i, msg_txt) {
-       ind = msg_txt.innerHTML.indexOf("@" + name);
+       ind = msg_txt.innerText.indexOf("@" + name);
        if (ind != -1) {
            info = $(msg_txt).parent();
            
@@ -85,76 +85,72 @@ function selectNamedMessage(name) {
 
 function hideUser() {
     if (user_hide_list) {
-       $.each(user_hide_list.split(" "), function(i, u) {
-          hideUser_(u);
-       });
+        var splitted_list = user_hide_list.split(" ");
+
+        $(".msg_info").each(function(i, msg_info) {
+           info_username = $(msg_info).children(".username")[1];
+            
+           if (splitted_list.indexOf(info_username.innerText) != -1) {
+               info = $(msg_info).parent(".info")[0];
+               msg = $(info).parent(".msg")[0];
+               msg.innerHTML = "Hide " + name;
+           }
+        });
     }
 }
 
-function hideUser_(name) {
-    name = "@" + name;
-    
-    msgs_info = $(".msg_info")
-    $.each(msgs_info, function(i, msg_info) {
-       info_username = $(msg_info).children(".username")[1];
-        
-       if (info_username.innerHTML == name) {
-           info = $(msg_info).parent(".info")[0];
-           msg = $(info).parent(".msg")[0];
-           msg.innerHTML = "Hide " + name;
-       }
-    });
-}
-
 applyCss();
-var user_name = $("#current-user")[0].innerHTML;
+var user_name = $("#current-user")[0].innerText;
 createBigPanel(user_hide_list);
 createSmallPanel();
 hideUser();
 selectNamedMessage(user_name);
 
-if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) {
+if (document.URL.indexOf(encodeURIComponent("новости")) != -1) {
     console.log("Вы на новостной странице");
-} else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) {
+} else if (document.URL.indexOf(encodeURIComponent("обращение")) != -1) {
     $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
     unsafeWindow.$(window).unbind('scroll');
-//Код на десяточку!
-loadMessages = function (e) {
-    list = $('.msg_list');
-    
-    current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
-    
-    '' != current_url && $.ajax({
-        url: current_url,
-        type: 'get',
-        dataType: 'json',
-        success: function (e) {
-            'ok' == e.status && ($.each(e.messages, function (e, t) {
-                try {
-                    last = Math.min(t.item_id, last);
-                    if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
-                } catch (n) {
-                }
-            }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'))
-            //loadNext();
-        },
-        error: function () {
+    //Код на десяточку!
+    loadMessages = function (e) {
+        list = $('.msg_list');
+        
+        current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
+        if (current_url == '') {
+            return
         }
-    });
-    
-};
+        
+        $.ajax({
+            url: current_url,
+            type: 'get',
+            dataType: 'json',
+            success: function (e) {
+                'ok' == e.status && ($.each(e.messages, function (e, t) {
+                    try {
+                        last = Math.min(t.item_id, last);
+                        if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
+                    } catch (n) {
+                    }
+                }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'))
+                //loadNext();
+            },
+            error: function () {
+            }
+        });
+        
+    };
 
-var last = false;
-var i = 0;
-function loadNext() {
-    i++;
-    if (i > 2) {
-        return;
+    var last = false;
+    var i = 0;
+    function loadNext() {
+        i++;
+        if (i > 2) {
+            return;
+        }
+        
+        //строка на 10/10
+        null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
     }
-    
-    //строка на 10/10
-    null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
-}
 }
 
 
