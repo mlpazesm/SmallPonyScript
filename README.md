@@ -1,3 +1,6 @@
+SmallPonyScript
+===============
+
 Азъесмчуй удобно!
 
 
@@ -9,11 +12,10 @@
 
 ОБРАЩЕНИЯ
 
-SmallPonyScript
+Установка
 ===============
-Firefox.
+Firefox:
 
-Установка:
 
 1. Установите расширение Greasemonkey - https://addons.mozilla.org/ru/firefox/addon/greasemonkey/.
 
