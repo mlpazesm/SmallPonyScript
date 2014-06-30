@@ -9,9 +9,9 @@
 // @grant           GM_getValue
 // @grant           GM_setValue
 // @grant           unsafeWindow
-// @require         http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js
 // ==/UserScript==
 
+$ = unsafeWindow.jQuery;
 
 //var user_hide_list = GM_getValue("user_hide_list", "");
 var user_hide_list = "";
@@ -41,7 +41,9 @@ function createSmallPanel() {
     var panel = document.createElement("div");
     panel.setAttribute("id", "ps_small_panel");
     $(panel).click(function() {
-        $("#ps_hide_text").val(GM_getValue("user_hide_list", ""));
+        setTimeout(function() {
+            $("#ps_hide_text").val(GM_getValue("user_hide_list", ""));;
+        }, 5);
         $("#ps_big_panel").show();
         
     });
@@ -63,7 +65,10 @@ function createBigPanel(text) {
     $(".ps_button").click(function() {
         $("#ps_big_panel").hide();
         user_hide_list = $("#ps_hide_text").val();
-        GM_setValue("user_hide_list", user_hide_list);
+        
+        setTimeout(function() {
+            GM_setValue("user_hide_list", user_hide_list);
+        }, 5);
         hideUser();
         location.reload();
     });
@@ -109,56 +114,75 @@ function hideUser_(name) {
 
 applyCss();
 var user_name = $("#current-user")[0].innerHTML;
-createBigPanel(user_hide_list);
-createSmallPanel();
 
-if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) { //новости
-    $(document).ready(function() {
-        selectNamedMessage(user_name);
-        user_hide_list = GM_getValue("user_hide_list", "");
-        hideUser();
-    });
-} else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) { //обращения
-    $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
-
-    //Код на десяточку!
-    loadMessages = function (e) {
-        list = $('.msg_list');
+var prev_url = window.location.pathname;
+$(document).bind("DOMSubtreeModified", function() {
+    cur_url = window.location.pathname;
     
-        current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
-    
-        '' != current_url && $.ajax({
-            url: current_url,
-            type: 'get',
-            dataType: 'json',
-            success: function (e) {
-                'ok' == e.status && ($.each(e.messages, function (e, t) {
-                    try {
-                        last = Math.min(t.item_id, last);
-                        if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
-                    } catch (n) {
-                    }
-                }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'));
-            },
-        });
-    
-    };
-
-    var last = false;
-    var i = 0;
-    function loadNext() {
-        i++;
-        if (i > 2) {
-            return;
-        }
-    
-        //строка на 10/10
-        null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
+    if (prev_url != cur_url) {
+        prev_url = cur_url;
+        setTimeout(function () {
+            process();   
+        }, 444);
     }
+});
+
+function process() {
+    if (document.URL.indexOf("%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8") != -1) { //новости
+        $(document).ready(function() {
+            createBigPanel(user_hide_list);
+            createSmallPanel();
+            
+            selectNamedMessage(user_name);
+            setTimeout(function() {
+                user_hide_list = GM_getValue("user_hide_list", "");
+                hideUser();
+            }, 5);
+        });
+    } else if (document.URL.indexOf("%D0%BE%D0%B1%D1%80%D0%B0%D1%89%D0%B5%D0%BD%D0%B8%D0%B5") != -1) { //обращения
+        $("div.greeting").html("Добро пожаловать в Обращения. <br>Обратите внимание! Это неофициальная функция!");
     
-    unsafeWindow.$(window).unbind('scroll');
-    $(document).ready(function() {
+        //Код на десяточку!
+        loadMessages = function (e) {
+            list = $('.msg_list');
+        
+            current_url = '/v1/feed?time=sec' + (e ? "$before_item_id=" + e : "");
+        
+            '' != current_url && $.ajax({
+                url: current_url,
+                type: 'get',
+                dataType: 'json',
+                success: function (e) {
+                    'ok' == e.status && ($.each(e.messages, function (e, t) {
+                        try {
+                            last = Math.min(t.item_id, last);
+                            if (t.content.indexOf("@" + user_name) != -1) unsafeWindow.showNewMsg(t, 'bottom');
+                        } catch (n) {
+                        }
+                    }), $('.info_line') .remove(), list.attr('data-page') && list.attr('data-page', parseInt(list.attr('data-page')) + 1), (e.end_of_line === !0 || 0 == e.messages.length) && list.append('<div id="end-of-line" class="info_line"></div>'));
+                },
+            });
+        
+        };
+    
+        var last = false;
+        var i = 0;
+        function loadNext() {
+            i++;
+            if (i > 2) {
+                return;
+            }
+        
+            //строка на 10/10
+            null === unsafeWindow.document.getElementById('end-of-line') && ($('.msg_list') [0] ? (msg_id = $('.msg_list .msg:last') .data('item-id'), $('.msg_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last))  : $('.users_list') [0] && (user_id = $('.users_list .user:last') .data('username'), $('.users_list') .append('<div id="end-of-line" class="info_line loading"></div>'), loadMessages(last)))
+        }
+        
         unsafeWindow.$(window).unbind('scroll');
-        loadNext();
-    });
+        $(document).ready(function() {
+            unsafeWindow.$(window).unbind('scroll');
+            loadNext();
+        });
+    }
 }
+
+process();
